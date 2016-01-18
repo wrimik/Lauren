@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var env = require('dotenv').load();
 var orm = require('orm');
 
-//var models = require('./app/models');
+var modelDefs = require('./app/models');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -27,18 +27,16 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(orm.express(
-    "mysql://" + process.env.DB_USER + ':' + process.env.DB_PASS + '@' + process.env.DB_HOST + '/' + process.env.DB_DATABASE,
+app.use(orm.express("mysql://" + process.env.DB_USER + ':' + process.env.DB_PASS + '@' + process.env.DB_HOST + '/' + process.env.DB_DATABASE,
     {
         define: function (db, models, next) {
             // this is how you add models to the req scope.
+            // Makes req.models.myModel available.
             // It's super important and no one tells you that...
-            models.piece = db.define('piece', {
-                id: {type: 'serial', key: true}, // the auto-incrementing primary key
-                name: {type: 'text'},
-                desc: {type: 'text'},
-                published: {type: 'boolean'}
-            }, {});
+            for(var modelName in modelDefs){
+                models[modelName]= db.define(modelName, modelDefs[modelName].schema, modelDefs[modelName].options);
+            }
+            db.sync();
             next();
         }
     })

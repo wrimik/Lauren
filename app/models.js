@@ -1,18 +1,12 @@
-module.exports = function(db, fn){
-    db.define('piece', {
-        id: {type: 'serial', key: true}, // the auto-incrementing primary key
-        name: {type: 'text'},
-        desc: {type: 'text'},
-        published: {type: 'boolean'}
-    }, {
-        methods: {
-            //images: function() {
-            //    return this.name + ' ' + this.surname;
-            //}
-        }
-    });
-    //db.load('models/User',    function(err){ if (err) { return fn(err); } });
+/**
+ * This serves as the loader for my models into the application.
+ * Everything in modelDefs will be added to req.models and is asssumed to
+ * be a database model.
+ * @type {exports}
+ */
+var piece = require('./models/Piece');
 
-    db.sync();
-    return fn();
+var modelDefs = {
+    piece: piece
 };
+module.exports = modelDefs;

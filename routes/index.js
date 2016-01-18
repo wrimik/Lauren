@@ -32,9 +32,14 @@ router.get('/contact', function (req, res) {
  * Admin pages
  */
 router.get('/admin/piece', function(req, res){
-    res.render('admin/piece', {page: {
-        title : 'Manage Pieces'
-    }});
+    var piece = req.models.piece;
+    console.log(piece);
+    piece.all( function(err, pieces){
+        res.render('admin/piece', {page: {
+            title : 'Manage Pieces',
+            pieces: pieces
+        }});
+    })
 });
 router.get('/wtf', function(req, res){
 });
