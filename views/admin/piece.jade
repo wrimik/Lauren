@@ -18,6 +18,9 @@ block content
                         |   Published
                     .form-group
                         input.btn.btn-primary(type='submit', value='Save')
-            .col-sm-12
-                pre
-                    #{JSON.stringify(page.pieces, null, 2)}
+            .col-sm-12.
+                TODO: pass Pieces to Angular and have Angular create the list &
+                associated for models
+            script(type='text/javascript').
+                var Pieces = !{JSON.stringify(page.pieces)};
+                console.log(Pieces);
