@@ -1,5 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var orm = require('orm');
+
+/**
+ * Public pages
+ */
 
 router.get('/', function (req, res) {
     res.render('pages/home', {page: {
@@ -21,5 +26,28 @@ router.get('/contact', function (req, res) {
         title : 'Contact Me'
     }});
 });
+
+
+/**
+ * Admin pages
+ */
+router.get('/admin/piece', function(req, res){
+    res.render('admin/piece', {page: {
+        title : 'Manage Pieces'
+    }});
+});
+router.get('/wtf', function(req, res){
+});
+router.post('/piece/create', function (req, res) {
+    var piece = new req.models.piece({
+        name: req.body.name,
+        desc: req.body.desc,
+        published: (req.body.published == 'published' ? true : false)
+    });
+    piece.save(function(err){
+        res.json(piece);
+    });
+});
+
 
 module.exports = router;

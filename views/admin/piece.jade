@@ -1,0 +1,20 @@
+extends ../templates/admin
+
+block content
+    section
+        .container
+            .col-sm-6.col-sm-offset-3
+                form(method='post',action='/piece/create')
+                    h2 Add A Piece
+                    .form-group
+                        label Name
+                        input.form-control(type='text', name='name')
+                    .form-group
+                        label Description
+                        textarea.form-control(name='desc')
+                    .form-group
+                        label
+                            input.form-control(type='checkbox', name='published', value='published')
+                        |   Published
+                    .form-group
+                        input.btn.btn-primary(type='submit', value='Save')

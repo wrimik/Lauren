@@ -1,14 +1,17 @@
-var express     = require('express');
-var path        = require('path');
-var favicon     = require('serve-favicon');
-var logger      = require('morgan');
-var cookieParser= require('cookie-parser');
-var bodyParser  = require('body-parser');
-var env         = require('dotenv').load();
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var env = require('dotenv').load();
+var orm = require('orm');
 
-var db      = require('./database/config');
-var routes  = require('./routes/index');
-var users   = require('./routes/users');
+//var models = require('./app/models');
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
 
 var app = express();
 
@@ -20,18 +23,35 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(orm.express(
+    "mysql://" + process.env.DB_USER + ':' + process.env.DB_PASS + '@' + process.env.DB_HOST + '/' + process.env.DB_DATABASE,
+    {
+        define: function (db, models, next) {
+            // this is how you add models to the req scope.
+            // It's super important and no one tells you that...
+            models.piece = db.define('piece', {
+                id: {type: 'serial', key: true}, // the auto-incrementing primary key
+                name: {type: 'text'},
+                desc: {type: 'text'},
+                published: {type: 'boolean'}
+            }, {});
+            next();
+        }
+    })
+);
 
 app.use('/', routes);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handlers
@@ -39,23 +59,23 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+    app.use(function (err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
     });
-  });
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
 });
 
 
