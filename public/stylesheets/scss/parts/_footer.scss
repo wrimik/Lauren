@@ -1,0 +1,35 @@
+/* ===============
+   General Footer Aesthetics
+   =============== */
+footer{
+  background-color:#0d3349;
+  background-image:url('/images/footer-bg.png');
+  color:#fff;
+  text-align:center;
+  padding:35px 0;
+  height:130px;
+  a{
+    color:#fff;
+    text-decoration: underline;
+    &:hover{
+      color:#fff;
+      font-style: italic;
+    }
+  }
+}
+
+/* ===============
+   Sticky footer stuff
+   =============== */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 130px; /* Same as footer height */
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

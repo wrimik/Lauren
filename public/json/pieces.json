@@ -1,0 +1,12 @@
+[
+  {
+    "category" : "Paintings",
+    "title": "Post 1",
+    "src": "http://placehold.it/300x200"
+  },
+  {
+    "category" : "Paintings",
+    "title": "Post 2",
+    "src": "http://placehold.it/300x200"
+  }
+]

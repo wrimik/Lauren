@@ -1,0 +1,17 @@
+.jumbotron{
+  padding-bottom: 128px;
+  padding-top: 168px;
+  background-image:url('/images/hero.jpg');
+  background-size:cover;
+  background-repeat: no-repeat;
+  margin-bottom:0;
+  color:#fff;
+  h1{
+    text-shadow: 0 0 6px #555;
+  }
+  .frosted{
+    background: rgba(0, 0, 0, 0.39) none repeat scroll 0 0;
+    color: #fff;
+    padding: 2px 40px 7px;
+  }
+}

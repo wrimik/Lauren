@@ -1,0 +1,78 @@
+nav {
+  background-color: #fff;
+  border-bottom: 1px solid #d0d1d6;
+  padding: 18px 0; }
+  nav #brand {
+    color: #666;
+    font-size: 3rem; }
+
+body {
+  font-family: Lato, Helvetica;
+  color: #333; }
+
+article h1 {
+  margin-top: 0; }
+article p {
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 3.5rem; }
+
+.jumbotron {
+  padding-bottom: 128px;
+  padding-top: 168px;
+  background-image: url("/images/hero.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-bottom: 0;
+  color: #fff; }
+  .jumbotron h1 {
+    text-shadow: 0 0 6px #555; }
+  .jumbotron .frosted {
+    background: rgba(0, 0, 0, 0.39) none repeat scroll 0 0;
+    color: #fff;
+    padding: 2px 40px 7px; }
+
+section {
+  padding: 60px 0; }
+
+/* ===============
+   General Footer Aesthetics
+   =============== */
+footer {
+  background-color: #0d3349;
+  background-image: url("/images/footer-bg.png");
+  color: #fff;
+  text-align: center;
+  padding: 35px 0;
+  height: 130px; }
+  footer a {
+    color: #fff;
+    text-decoration: underline; }
+    footer a:hover {
+      color: #fff;
+      font-style: italic; }
+
+/* ===============
+   Sticky footer stuff
+   =============== */
+html {
+  position: relative;
+  min-height: 100%; }
+
+body {
+  margin-bottom: 130px;
+  /* Same as footer height */ }
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%; }
+
+img {
+  max-width: 100%;
+  display: inline-block;
+  margin: 0 auto;
+  float: none;
+  clear: both; }
+
+/*# sourceMappingURL=app.css.map */

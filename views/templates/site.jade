@@ -1,0 +1,31 @@
+doctype html
+html(ng-app='laurenApp')
+    head
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible',content='IE=edge')
+        meta(name='viewport',content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+        title #{page.title} - Lauren Mastro
+        link(href='https://fonts.googleapis.com/css?family=Lato:400,700,300', rel='stylesheet', type='text/css')
+        link(rel='stylesheet',type='text/css', href='/stylesheets/dist/libs.min.css')
+        link(rel='stylesheet',type='text/css', href='/stylesheets/app.css')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js')
+        script(src='/javascripts/dist/libs.js')
+        //script(src='/javascripts/dist/lauren.js')
+    body
+        nav
+            .container
+                a(href='/', id='brand') Lauren Mastro
+                ul.nav.nav-pills.pull-right
+                    li
+                        a(href='/') HOME
+                    li
+                        a(href='/portfolio') PORTFOLIO
+                    li
+                        a(href='/about') ABOUT
+                    li
+                        a(href='/contact') CONTACT
+        block content
+        footer.footer
+            p I would be SUPER flattered if you wanted to use a picture of my work somewhere. If you feel like using any of my images, please,
+                a(href='/contact')  ask first.
+            | Thanks!

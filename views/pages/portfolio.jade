@@ -1,0 +1,10 @@
+extends ../templates/site
+section(ng-controller='PortfolioCtrl')
+    h1.text-center
+        Portfolio
+    #portfolio-viewport
+    .col-sm-4(ng-repeat='piece in pieces')
+        .thumbnail
+            img(ng-src='{{ piece.src }}')
+            .caption.text-center
+                {{ piece.title }}
