@@ -6,15 +6,16 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var env = require('dotenv').load();
 var orm = require('orm');
+var fileUpload = require('express-fileupload');
 
 var modelDefs = require('./app/models');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-
 var app = express();
 
+app.use(fileUpload());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

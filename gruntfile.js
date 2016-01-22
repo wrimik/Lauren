@@ -13,8 +13,9 @@ module.exports = function (grunt) {
             libs: {
                 // the files to concatenate
                 src: [
+                    'resources/js/jquery-tmp.min.js',
                     'node_modules/bootstrap/dist/js/bootstrap.min.js',
-                    'node_modules/angular2/angular.min.js'
+                    'node_modules/angular/angular.min.js'
                 ],
                 // the location of the resulting JS file
                 dest: 'public/javascripts/dist/libs.js'

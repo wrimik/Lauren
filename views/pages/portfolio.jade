@@ -1,10 +1,17 @@
 extends ../templates/site
-section(ng-controller='PortfolioCtrl')
-    h1.text-center
-        Portfolio
-    #portfolio-viewport
-    .col-sm-4(ng-repeat='piece in pieces')
-        .thumbnail
-            img(ng-src='{{ piece.src }}')
-            .caption.text-center
-                {{ piece.title }}
+block content
+    section(ng-controller='PieceCtrl')
+        h1.text-center Portfolio
+        script(type = 'text/javascript').
+            laurenApp.controller('PieceCtrl', function ($scope) {
+                $scope.pieces = !{JSON.stringify(page.pieces)};
+                $scope.source = function(piece){
+                    return '';
+                }
+            });
+        #portfolio-viewport
+        .piece(ng-repeat='piece in pieces')
+            img(ng-src='{{"/images/portfolio/"+piece.id+".jpg"}}')
+        .col-sm-4(ng-repeat='piece in pieces')
+            .thumbnail
+                .caption.text-center {{ piece.name }}

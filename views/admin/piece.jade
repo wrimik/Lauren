@@ -1,26 +1,116 @@
 extends ../templates/admin
 
 block content
-    section
+    script(type='text/javascript').
+        laurenApp.controller('PieceCtrl', function ($scope, $http) {
+            $scope.newPiece = {id:'new', name:'', published: '', desc:'', image:'', url:'', type:''};
+            $scope.pieces = !{JSON.stringify(page.pieces)};
+            $scope.activePiece = $scope.newPiece;
+            $scope.setActive  = function($index) {
+                $scope.activePiece = $scope.pieces[$index];
+            };
+            $scope.clearActive = function(){
+                $scope.activePiece = $scope.newPiece;
+            };
+            $scope.mode = function(){
+                return ($scope.activePiece.id == 'new' ? 'Create' : 'Edit');
+            };
+            /**
+            *   for new entries, the form posts to /piece/create
+            *   to edit existing entries, we post to /piece/{id}
+            */
+            $scope.formAction = function(){
+              return ($scope.mode() == 'Create' ? '/piece/create' : '/piece/' + $scope.activePiece.id);
+            };
+            $scope.formHeading = function(){
+              return ($scope.mode() == 'Create' ? 'Add Piece' : 'Edit: ' + $scope.activePiece.name);
+            };
+            $scope.save = function(){
+                $http({
+                    method: 'POST',
+                    url: $scope.formAction(),
+                    data: $scope.activePiece
+                }).then(function(res){
+                    if(res.data.success == 1 && typeof(res.data.id) != 'undefined'){
+                        $scope.activePiece.id = res.data.id;
+                        $scope.append($scope.activePiece);
+                        $scope.activePiece = $scope.newPiece;
+                    }
+                });
+                return false;
+            };
+            $scope.append = function(piece){
+                $scope.pieces.push(piece);
+            };
+            $scope.delete = function(){
+                if ($scope.activePiece.id == 'new') {
+                    return;
+                }
+                $http({
+                    method: 'POST',
+                    url: '/piece/' + $scope.activePiece.id + '/delete'
+                }).then(function() {
+                    for(var i in $scope.pieces){
+                        if ($scope.pieces[i].id == $scope.activePiece.id) {
+                            $scope.pieces.splice(i, 1);
+                            break;
+                        }
+                    }
+                    $scope.clearActive();
+                });
+            };
+        });
+    section(ng-controller='PieceCtrl')
         .container
-            .col-sm-6.col-sm-offset-3
-                form(method='post',action='/piece/create')
-                    h2 Add A Piece
-                    .form-group
-                        label Name
-                        input.form-control(type='text', name='name')
-                    .form-group
-                        label Description
-                        textarea.form-control(name='desc')
-                    .form-group
-                        label
-                            input.form-control(type='checkbox', name='published', value='published')
-                        |   Published
-                    .form-group
-                        input.btn.btn-primary(type='submit', value='Save')
-            .col-sm-12.
-                TODO: pass Pieces to Angular and have Angular create the list &
-                associated for models
-            script(type='text/javascript').
-                var Pieces = !{JSON.stringify(page.pieces)};
-                console.log(Pieces);
+            .col-sm-5
+                .panel.panel-default
+                    .panel-heading Saved Pieces
+                    table.panel-body.table
+                        thead
+                            tr
+                                th ID
+                                th Title
+                                th Is Published
+                        tbody
+                            tr(ng-repeat='piece in pieces', ng-click='setActive($index)')
+                                td {{ piece.id }}
+                                td {{ piece.name }}
+                                td
+                                    span(ng-show="{{ piece.published }}") &check;
+                            tr(ng-show='pieces.length == undefined')
+                                td(colspan='3')  Nothing Created Yet
+            .col-sm-6.col-sm-offset-1
+                form(method='post')
+                    .panel.panel-primary
+                        .panel-heading {{ formHeading() }}
+                        .panel-body
+                            input(ng-model='activePiece.id', type='hidden', name='id')
+                            .form-group
+                                label Name
+                                input.form-control(ng-model='activePiece.name', type='text', name='name')
+                            .form-group
+                                label Description
+                                textarea.form-control(ng-model='activePiece.desc ', name='desc')
+                            .form-group
+                                label
+                                    input(ng-model='activePiece.published', type='checkbox', name='published', value='published')
+                                    | Published
+                            .form-group
+                                label Type
+                                label
+                                    input(ng-model='activePiece.type', value='image', type='radio', name='type')
+                                    | Image
+                                label
+                                    input(ng-model='activePiece.type', value='video', type='radio', name='type')
+                                    | Video
+                            .form-group(ng-show='activePiece.type == "image"')
+                                label Image
+                                input(ng-model='activePiece.image', type='file', name='image')
+                            .form-group(ng-show='activePiece.type == "video"')
+                                label Embed Code
+                                textarea.form-control(ng-model='activePiece.url', name='url')
+                        .panel-footer
+                            .btn.btn-default(ng-show='activePiece.id != "new"', ng-click='clearActive()') Clear
+                            .btn.btn-danger(ng-show='activePiece.id != "new"', ng-click='delete()') DELETE FOR EVER
+                            input.btn.btn-primary(type='submit',ng-click='save()', value='Save')
+                            //.btn.btn-primary(ng-click='activePiece({id:rand(0,100),name:"realquick"})') test
