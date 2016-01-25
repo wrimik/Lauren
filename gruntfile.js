@@ -7,7 +7,10 @@ module.exports = function (grunt) {
                 separator: ';'
             },
             stylesheets: {
-                src:['node_modules/bootstrap/dist/css/bootstrap.min.css'],
+                src:[
+                    'node_modules/bootstrap/dist/css/bootstrap.min.css',
+                    'node_modules/dropzone/dist/dropzone.css'
+                ],
                 dest: 'public/stylesheets/dist/libs.min.css'
             },
             libs: {
@@ -15,6 +18,7 @@ module.exports = function (grunt) {
                 src: [
                     'resources/js/jquery-tmp.min.js',
                     'node_modules/bootstrap/dist/js/bootstrap.min.js',
+                    'node_modules/dropzone/dist/dropzone.js',
                     'node_modules/angular/angular.min.js'
                 ],
                 // the location of the resulting JS file

@@ -1,11 +1,10 @@
-var Piece = {
+var Contact = {
     schema: {
         id: {type: 'serial', key: true}, // the auto-incrementing primary key
         name: {type: 'text'},
-        desc: {type: 'text'},
-        embed_code: {type: 'text'},
-        type: {type: 'text'},
-        published: {type: 'boolean'}
+        email: {type: 'text'},
+        phone: {type: 'text'},
+        message: {type: 'text'}
     },
     options: {
         methods: {
@@ -16,4 +15,4 @@ var Piece = {
     }
 };
 
-module.exports = Piece;
+module.exports = Contact;

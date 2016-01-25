@@ -10,8 +10,6 @@ block content
                 }
             });
         #portfolio-viewport
-        .piece(ng-repeat='piece in pieces')
-            img(ng-src='{{"/images/portfolio/"+piece.id+".jpg"}}')
-        .col-sm-4(ng-repeat='piece in pieces')
-            .thumbnail
-                .caption.text-center {{ piece.name }}
+        #coverflow
+            .piece(ng-repeat='piece in pieces')
+                img(ng-src='{{"/images/portfolio/"+piece.id+".jpg"}}')

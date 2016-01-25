@@ -3,9 +3,10 @@ extends ../templates/admin
 block content
     script(type='text/javascript').
         laurenApp.controller('PieceCtrl', function ($scope, $http) {
-            $scope.newPiece = {id:'new', name:'', published: '', desc:'', image:'', url:'', type:''};
-            $scope.pieces = !{JSON.stringify(page.pieces)};
+            $scope.newPiece = {id:'new', name:'', published: '', desc:'', file: '', url:'', type:''};
+            $scope.pieces = !{(JSON.stringify(page.pieces) ? JSON.stringify(page.pieces) : '[]' )};
             $scope.activePiece = $scope.newPiece;
+
             $scope.setActive  = function($index) {
                 $scope.activePiece = $scope.pieces[$index];
             };
@@ -20,16 +21,14 @@ block content
             *   to edit existing entries, we post to /piece/{id}
             */
             $scope.formAction = function(){
-              return ($scope.mode() == 'Create' ? '/piece/create' : '/piece/' + $scope.activePiece.id);
+              return ($scope.mode() == 'Create' ? '/admin/piece/create' : '/admin/piece/' + $scope.activePiece.id);
             };
-            $scope.formHeading = function(){
-              return ($scope.mode() == 'Create' ? 'Add Piece' : 'Edit: ' + $scope.activePiece.name);
-            };
+
             $scope.save = function(){
                 $http({
                     method: 'POST',
                     url: $scope.formAction(),
-                    data: $scope.activePiece
+                    data: {Piece : $scope.activePiece }
                 }).then(function(res){
                     if(res.data.success == 1 && typeof(res.data.id) != 'undefined'){
                         $scope.activePiece.id = res.data.id;
@@ -48,7 +47,7 @@ block content
                 }
                 $http({
                     method: 'POST',
-                    url: '/piece/' + $scope.activePiece.id + '/delete'
+                    url: '/admin/piece/' + $scope.activePiece.id + '/delete'
                 }).then(function() {
                     for(var i in $scope.pieces){
                         if ($scope.pieces[i].id == $scope.activePiece.id) {
@@ -76,13 +75,13 @@ block content
                                 td {{ piece.id }}
                                 td {{ piece.name }}
                                 td
-                                    span(ng-show="{{ piece.published }}") &check;
+                                    span(ng-show="piece.published") &check;
                             tr(ng-show='pieces.length == undefined')
                                 td(colspan='3')  Nothing Created Yet
             .col-sm-6.col-sm-offset-1
-                form(method='post')
+                form#piece-form(method='post')
                     .panel.panel-primary
-                        .panel-heading {{ formHeading() }}
+                        .panel-heading {{ ($scope.mode() == 'Create' ? 'Add Piece' : 'Edit: ' + $scope.activePiece.name) }}
                         .panel-body
                             input(ng-model='activePiece.id', type='hidden', name='id')
                             .form-group
@@ -105,7 +104,7 @@ block content
                                     | Video
                             .form-group(ng-show='activePiece.type == "image"')
                                 label Image
-                                input(ng-model='activePiece.image', type='file', name='image')
+                                input(ng-model='activePiece.file', type='file', name='image')
                             .form-group(ng-show='activePiece.type == "video"')
                                 label Embed Code
                                 textarea.form-control(ng-model='activePiece.url', name='url')
@@ -113,4 +112,17 @@ block content
                             .btn.btn-default(ng-show='activePiece.id != "new"', ng-click='clearActive()') Clear
                             .btn.btn-danger(ng-show='activePiece.id != "new"', ng-click='delete()') DELETE FOR EVER
                             input.btn.btn-primary(type='submit',ng-click='save()', value='Save')
-                            //.btn.btn-primary(ng-click='activePiece({id:rand(0,100),name:"realquick"})') test
+        .modal.fade
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close.pull-right(data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') &times;
+                        h4.modal-title  Images
+                    .modal-body
+                        form.dropzone#dropzone(action='/admin/piece/add-images')
+                            input(type='text', ng-model='activePiece.id', name='piece_id')
+                            #dropzone-preview
+                    .modal-footer
+                        .btn.btn-default(data-dismiss='modal')  Close
+                        .btn.btn-primary    Save Images

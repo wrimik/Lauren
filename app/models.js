@@ -4,9 +4,8 @@
  * be a database model.
  * @type {exports}
  */
-var piece = require('./models/Piece');
 
-var modelDefs = {
-    piece: piece
+module.exports = {
+    Piece: require('./models/Piece'),
+    Contact: require('./models/Contact')
 };
-module.exports = modelDefs;

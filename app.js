@@ -6,74 +6,67 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var env = require('dotenv').load();
 var orm = require('orm');
-var fileUpload = require('express-fileupload');
-
-var modelDefs = require('./app/models');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var expressControllers = require('express-controller');
 
 var app = express();
 
-app.use(fileUpload());
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+/**
+ * first handle cookies and static files.
+ */
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/**
+ * Config View Engine
+ */
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+/**
+ * Parse request body for things like POST values
+ */
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+/**
+ * Load models into database schema
+ */
 app.use(orm.express("mysql://" + process.env.DB_USER + ':' + process.env.DB_PASS + '@' + process.env.DB_HOST + '/' + process.env.DB_DATABASE,
     {
         define: function (db, models, next) {
-            // this is how you add models to the req scope.
-            // Makes req.models.myModel available.
-            // It's super important and no one tells you that...
-            for(var modelName in modelDefs){
-                models[modelName]= db.define(modelName, modelDefs[modelName].schema, modelDefs[modelName].options);
-            }
+            var m = require('./app/models');
+            models.Piece   = db.define('piece', m['Piece'].schema, m['Piece'].options);
+            models.Contact = db.define('contact', m['Contact'].schema, m['Contact'].options);
             db.sync();
             next();
         }
     })
 );
 
-app.use('/', routes);
-app.use('/users', users);
+/**
+ * Set Routes Via Controllers
+ */
+app.use(require('./app/Controllers/HomeController'));
+app.use('/admin', require('./app/Controllers/PieceController'));
 
-// catch 404 and forward to error handler
+/**
+ * Handle Errors
+ */
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
 app.use(function (err, req, res, next) {
+    if (app.get('env') !== 'development') {
+        err = {};
+    }
     res.status(err.status || 500);
     res.render('error', {
-        message: err.message,
-        error: {}
+            message: err.message,
+            error: err
     });
 });
 
